@@ -1,0 +1,78 @@
+\documentclass[a4paper,USenglish]{lipics-v2021}
+\usepackage{amssymb,amsthm,amsmath}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{thmtools, thm-restate}
+
+\newcommand{\moveToAppendix}{1}
+\newcommand{\starBool}{0} 
+\newcommand{\starCommand}{\if\starBool1{ {\normalfont($\star$)}}\fi}
+\makeatletter
+\def\thmhead@plain#1#2#3{%
+	\thmname{#1}\thmnumber{\@ifnotempty{#1}{ }\@upn{#2\starCommand}}%
+	\thmnote{ {\the\thm@notefont (#3)}}}
+\let\thmhead\thmhead@plain
+\makeatother
+\newcommand{\starToggle}{\if\starBool0{\gdef\starBool{1}}\else{\gdef\starBool{0}}\fi}
+\newenvironment{starTheorem}[1]
+{\if\moveToAppendix1\starToggle\fi
+	\restatable{theorem}{#1}
+}
+{ 
+	\endrestatable
+	\if\moveToAppendix1\starToggle\fi
+}
+
+\title{Automatic placing of proofs to/from the appendix}
+\author{Jason {Schoeters}}{University of Cambridge \and \url{https://jschoete.github.io/}}{jason.schoeters.cs@gmail.com}{}{}
+\authorrunning{J. Schoeters} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+\Copyright{Jason Schoeters} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\ccsdesc[500]{General and reference}
+\keywords{Efficient formatting} %TODO mandatory; please add comma-separated list of keywords
+\acknowledgements{We would like to thank Jason of the past, who, for once in his life, decided to optimise something for future use and actually note it down somewhere. Absolutely amazing. $\heartsuit$}
+\hideLIPIcs
+
+\begin{document}
+	
+\maketitle
+
+\begin{abstract}
+	In this document, we show how to automatically place proofs to, or from, the appendix and marking corresponding theorems automatically by a $\star$ symbol, or removing it. From a user perspective, this is easily done through the switching of a 1 to a 0. From a creator perspective though, all this was done through some \LaTeX\space black magic, the result of years of suffering trying to do without any teaching of this foreign language, including the offering of virgin interns to the angry \LaTeX\space gods. But finally, we did it. We god damn did it.\footnote{``I honestly believe that my genius it generates gravity.'' - Jeremy Clarkson}
+\end{abstract}
+
+\section{First chapter}
+
+In this \verb|.tex| file, scroll up until you find \verb|\newcommand{\moveToAppendix}{1}|. This command is set to 1, meaning all proofs associated with the \verb|\begin{starTheorem}| such as \Cref{theorem:two} used below (note how the proof is encased in a specific format as well), are automatically moved to the appendix. The reader is encouraged to freely change the value from 1 to 0 to observe how proofs automatically place themselves to/from the appendix, and how theorems obtain/remove the $\star$ symbol, and how the appendix is created/removed automatically as well. It is ok to cry at this beautiful sight. 
+
+\begin{theorem}
+	This theorem is numbered 1.
+\end{theorem}
+
+\begin{proof}
+	Look at the number. Constant time solvable, bam.
+\end{proof}
+
+\begin{starTheorem}{starTheoremOne}
+	\label{theorem:two}
+	This theorem is numbered 2.
+\end{starTheorem}
+
+\newcommand{\starTheoremOneProof}{
+	\begin{proof}
+		This proof is quite technical and, depending on the axiomatic system considered, becomes very lenghty and (to be honest) extremely boring. In other words, it is not for the simple of mind, and the weak of flesh. We assume the axiom $1 \neq 2$\footnote{This axiom is in fact undecidable, although it is conjectured for some time the two numbers are distinct.}. Now, start by observing the number, and denote it by $a$. We make the assumption that $a$ must be quite small, since this paper is only a couple of pages long and by all standards, theorem numbers increase incrementally over the course of a paper. Let $k = 10^{66}$, corresponding to the amount of Planck times since the birth of the universe\footnote{This proof will have to be adapted for people reading this in a couple of trillion years.}. By the reasonable assumption that at most one theorem can be stated per one Planck time, we know that $k \geq a$ is a (asymptotically tight) upper bound. Now, by induction, let us proof that $a \neq k'$ for all $k' \leq k$. Observe that $a \neq k$, then observe $a \neq k-1$, then observe $a \neq k-2$, \textit{etc.} However, when arriving at $k' = 2$, observe that equality $a = k'$ is established. Now, to be sure it $a$ is in fact 2, and not 2 and 1 at the same time through some quantum magic and spooky action at a distance, use the axiom $1 \neq 2$. 
+	\end{proof}
+}\if\moveToAppendix0\starTheoremOneProof\fi
+	
+\if\moveToAppendix1 
+\newpage
+\appendix	
+\section{Auxiliary proofs}
+\label{appendix:aux}
+
+\starTheoremOne*
+\starTheoremOneProof
+
+\fi
+		
+\end{document}
